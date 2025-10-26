@@ -13,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { useEventNameContext } from '@/lib/EventNameProvider';
 
 export function Header() {
   const { isAdmin, logout, loading } = useAuthContext();
+  const { eventName } = useEventNameContext();
   const router = useRouter();
 
   const handleSignIn = () => {
@@ -28,7 +30,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Ticket className="h-7 w-7 text-accent" />
           <h1 className="text-2xl font-bold font-headline text-foreground">
-            FestPay
+            {eventName}
           </h1>
         </Link>
         <div className="flex items-center gap-4">

@@ -5,8 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PaymentStatusTable from './PaymentStatusTable';
 import QrCodeManager from './QrCodeManager';
 import DataIntegrityChecker from './DataIntegrityChecker';
-import { Lock } from 'lucide-react';
+import { Lock, Settings } from 'lucide-react';
 import { usePaymentContext } from '@/lib/PaymentProvider';
+import EventNameManager from './EventNameManager';
 
 interface AdminDashboardProps {
   firestoreLogs: string;
@@ -21,7 +22,7 @@ export default function AdminDashboard({
 
   return (
     <Tabs defaultValue="status">
-      <TabsList className="grid w-full sm:grid-cols-3 mb-4">
+      <TabsList className="grid w-full sm:grid-cols-4 mb-4">
         <TabsTrigger value="status">Payment Status</TabsTrigger>
         <TabsTrigger value="qr" disabled={!isAdmin}>
             <div className='flex items-center gap-2'>
@@ -32,6 +33,13 @@ export default function AdminDashboard({
         <TabsTrigger value="integrity" disabled={!isAdmin}>
             <div className='flex items-center gap-2'>
                 Data Integrity
+                {!isAdmin && <Lock className="h-4 w-4" />}
+            </div>
+        </TabsTrigger>
+        <TabsTrigger value="settings" disabled={!isAdmin}>
+            <div className='flex items-center gap-2'>
+                <Settings className="h-4 w-4" />
+                Event Settings
                 {!isAdmin && <Lock className="h-4 w-4" />}
             </div>
         </TabsTrigger>
@@ -54,6 +62,11 @@ export default function AdminDashboard({
         ) : null}
       </TabsContent>
       
+      <TabsContent value="settings">
+        {isAdmin ? (
+          <EventNameManager />
+        ) : null}
+      </TabsContent>
     </Tabs>
   );
 }

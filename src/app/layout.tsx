@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/lib/auth';
 import { QrCodeProvider } from '@/lib/QrCodeProvider';
 import { PaymentProvider } from '@/lib/PaymentProvider';
+import { EventNameProvider } from '@/lib/EventNameProvider';
 
 export const metadata: Metadata = {
   title: 'FestPay',
@@ -26,13 +27,15 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
         <AuthProvider>
-          <QrCodeProvider>
-            <PaymentProvider>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Toaster />
-            </PaymentProvider>
-          </QrCodeProvider>
+          <EventNameProvider>
+            <QrCodeProvider>
+              <PaymentProvider>
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Toaster />
+              </PaymentProvider>
+            </QrCodeProvider>
+          </EventNameProvider>
         </AuthProvider>
       </body>
     </html>
