@@ -44,16 +44,19 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
   const { toast } = useToast();
   const { isAdmin } = useAuthContext();
   const { updatePayment } = usePaymentContext();
-  const [state, formAction] = useActionState(updatePaymentStatus, { status: 'idle', message: '' });
-
-  useEffect(() => {
-    if (state.status === 'success' && state.paymentId && state.newStatus) {
-      toast({ title: "Success", description: state.message });
-      updatePayment(state.paymentId, state.newStatus);
-    } else if (state.status === 'error') {
-      toast({ variant: 'destructive', title: "Error", description: state.message });
+  
+  const onAction = async (prevState: { status: string; message: string; }, formData: FormData) => {
+    const result = await updatePaymentStatus(prevState, formData);
+    if (result.status === 'success' && result.paymentId && result.newStatus) {
+      toast({ title: "Success", description: result.message });
+      updatePayment(result.paymentId, result.newStatus);
+    } else if (result.status === 'error') {
+      toast({ variant: 'destructive', title: "Error", description: result.message });
     }
-  }, [state, toast, updatePayment]);
+    return result;
+  }
+
+  const [state, formAction] = useActionState(onAction, { status: 'idle', message: '' });
 
   return (
     <Card>
