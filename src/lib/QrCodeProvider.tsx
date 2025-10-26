@@ -17,43 +17,42 @@ if (!defaultQrCode) {
   throw new Error("Default QR code placeholder not found");
 }
 
+const LOCAL_STORAGE_KEY = 'customQrCode';
+
 export function QrCodeProvider({ children }: { children: ReactNode }) {
-  const [qrCode, setQrCodeState] = useState<ImagePlaceholder>(defaultQrCode);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [qrCode, setQrCodeState] = useState<ImagePlaceholder>(() => {
+    if (typeof window === 'undefined') {
+      return defaultQrCode;
+    }
+    try {
+      const storedQrCode = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return storedQrCode ? JSON.parse(storedQrCode) : defaultQrCode;
+    } catch (error) {
+      console.error('Could not access local storage or parse QR code', error);
+      return defaultQrCode;
+    }
+  });
 
   useEffect(() => {
     try {
-      const storedQrCode = localStorage.getItem('customQrCode');
-      if (storedQrCode) {
-        setQrCodeState(JSON.parse(storedQrCode));
+      if (qrCode.imageUrl === defaultQrCode.imageUrl) {
+         localStorage.removeItem(LOCAL_STORAGE_KEY);
+      } else {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(qrCode));
       }
-    } catch (error) {
-      console.error('Could not access local storage or parse QR code', error);
-    }
-    setIsInitialized(true);
-  }, []);
-
-  const setQrCode = (newQrCode: ImagePlaceholder) => {
-    try {
-      localStorage.setItem('customQrCode', JSON.stringify(newQrCode));
-      setQrCodeState(newQrCode);
     } catch (error) {
       console.error('Could not save QR code to local storage', error);
     }
+  }, [qrCode]);
+
+
+  const setQrCode = (newQrCode: ImagePlaceholder) => {
+    setQrCodeState(newQrCode);
   };
 
   const deleteQrCode = () => {
-    try {
-      localStorage.removeItem('customQrCode');
-      setQrCodeState(defaultQrCode);
-    } catch (error) {
-        console.error('Could not remove QR code from local storage', error);
-    }
+    setQrCodeState(defaultQrCode);
   };
-
-  if (!isInitialized) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <QrCodeContext.Provider value={{ qrCode, setQrCode, deleteQrCode }}>

@@ -13,33 +13,30 @@ const DEFAULT_EVENT_NAME = 'FestPay';
 const LOCAL_STORAGE_KEY = 'eventName';
 
 export function EventNameProvider({ children }: { children: ReactNode }) {
-  const [eventName, setEventNameState] = useState<string>(DEFAULT_EVENT_NAME);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [eventName, setEventNameState] = useState<string>(() => {
+    if (typeof window === 'undefined') {
+      return DEFAULT_EVENT_NAME;
+    }
+    try {
+      const storedName = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return storedName ? storedName : DEFAULT_EVENT_NAME;
+    } catch (error) {
+      console.error('Could not access local storage for event name', error);
+      return DEFAULT_EVENT_NAME;
+    }
+  });
 
   useEffect(() => {
     try {
-      const storedName = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (storedName) {
-        setEventNameState(storedName);
-      }
-    } catch (error) {
-      console.error('Could not access local storage for event name', error);
-    }
-    setIsInitialized(true);
-  }, []);
-
-  const setEventName = (name: string) => {
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, name);
-      setEventNameState(name);
+      localStorage.setItem(LOCAL_STORAGE_KEY, eventName);
     } catch (error) {
       console.error('Could not save event name to local storage', error);
     }
-  };
+  }, [eventName]);
 
-  if (!isInitialized) {
-    return null; // Or a loading spinner
-  }
+  const setEventName = (name: string) => {
+    setEventNameState(name);
+  };
 
   return (
     <EventNameContext.Provider value={{ eventName, setEventName }}>
