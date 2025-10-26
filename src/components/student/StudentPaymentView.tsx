@@ -45,6 +45,10 @@ export function StudentPaymentView({
   const paidStudents = payments.filter(p => p.status === 'completed');
   const pendingStudents = payments.filter(p => p.status === 'pending');
 
+  const totalCollected = payments
+    .filter((p) => p.status === 'completed')
+    .reduce((sum, p) => sum + p.amount, 0);
+
   const handleConfirmPayment = () => {
     if (!selectedStudentId) {
         toast({
@@ -168,8 +172,16 @@ export function StudentPaymentView({
       <div className="w-full max-w-md mx-auto">
         <Card>
             <CardHeader>
-                <CardTitle className='font-headline'>Payment Status</CardTitle>
-                <CardDescription>Status of all student payments.</CardDescription>
+                <div className="flex justify-between items-start">
+                  <div>
+                      <CardTitle className='font-headline'>Payment Status</CardTitle>
+                      <CardDescription>Status of all student payments.</CardDescription>
+                  </div>
+                  <div className="text-right">
+                      <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
+                      <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
+                  </div>
+                </div>
             </CardHeader>
             <CardContent>
                 <Accordion type="multiple" defaultValue={['paid', 'pending']} className="w-full">
