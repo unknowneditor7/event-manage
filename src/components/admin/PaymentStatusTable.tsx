@@ -91,6 +91,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
 
   const generatePdf = () => {
     const doc = new jsPDF() as jsPDFWithAutoTable;
+    const tableStartY = 55;
 
     doc.setFontSize(20);
     doc.text(`${eventName} - Payment Report`, 14, 22);
@@ -98,8 +99,9 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     doc.setTextColor(100);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
 
+    // Amount Details
     doc.setFontSize(12);
-    doc.text('Summary', 14, 40);
+    doc.text('Amount Details', 14, 40);
     doc.autoTable({
       startY: 45,
       head: [['Metric', 'Value']],
@@ -114,12 +116,11 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
       ],
       theme: 'striped',
       headStyles: { fillColor: [45, 45, 45] },
-      styles: { halign: 'left' },
-      columnStyles: { 1: { halign: 'right' } },
     });
     
-    let finalY = (doc as any).lastAutoTable.finalY || 10;
+    let finalY = (doc as any).lastAutoTable.finalY || tableStartY;
 
+    // Paid Students List
     if (paidStudents.length > 0) {
       doc.setFontSize(12);
       doc.text('Paid Students', 14, finalY + 15);
@@ -137,9 +138,10 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
       finalY = (doc as any).lastAutoTable.finalY;
     }
 
+    // Unpaid Students List
     if (pendingStudents.length > 0) {
       doc.setFontSize(12);
-      doc.text('Pending Students', 14, finalY + 15);
+      doc.text('Pending Students (Unpaid)', 14, finalY + 15);
        doc.autoTable({
         startY: finalY + 20,
         head: [['Student Name', 'Amount']],
@@ -160,8 +162,10 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     csvContent += `Payment Report for ${eventName}\n`;
     csvContent += `Generated on,${new Date().toLocaleDateString()}\n\n`;
 
-    csvContent += "Summary\n";
+    // Amount Details
+    csvContent += "Amount Details\n";
     const summaryData = [
+      ['Metric', 'Value'],
       ['Total Students', payments.length],
       ['Payment Amount per Student', `"${paymentSettings.amount.toFixed(2)}"`],
       ['Total Expected', `"${totalExpected.toFixed(2)}"`],
@@ -173,6 +177,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     summaryData.forEach(row => { csvContent += row.join(',') + "\n"; });
     csvContent += "\n";
 
+    // Paid Students List
     if (paidStudents.length > 0) {
       csvContent += "Paid Students\n";
       csvContent += "Student Name,Amount,Date,Status\n";
@@ -183,8 +188,9 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
       csvContent += "\n";
     }
 
+    // Unpaid Students List
     if (pendingStudents.length > 0) {
-      csvContent += "Pending Students\n";
+      csvContent += "Pending Students (Unpaid)\n";
       csvContent += "Student Name,Amount,Status\n";
       pendingStudents.forEach(p => {
         const row = [p.studentName, p.amount.toFixed(2), p.status];
