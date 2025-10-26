@@ -25,6 +25,7 @@ import { usePaymentContext } from '@/lib/PaymentProvider';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useQrCodeContext } from '@/lib/QrCodeProvider';
+import { cn } from '@/lib/utils';
 
 interface StudentPaymentViewProps {
   students: Student[];
@@ -74,6 +75,7 @@ export function StudentPaymentView({
   };
 
   const selectedStudentPayment = payments.find(p => p.studentId === selectedStudentId);
+  const CREATOR_NAME = 'Vishwa S';
 
   return (
     <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -147,7 +149,7 @@ export function StudentPaymentView({
                         <AccordionContent>
                             <ul className="space-y-2 pt-2">
                                 {paidStudents.map(p => (
-                                    <li key={p.id} className="flex justify-between items-center p-2 rounded-md bg-muted/50">
+                                    <li key={p.id} className={cn("flex justify-between items-center p-2 rounded-md bg-muted/50", p.studentName === CREATOR_NAME && 'text-accent font-bold')}>
                                         <span>{p.studentName}</span>
                                         <Badge variant="secondary">Completed</Badge>
                                     </li>
@@ -165,7 +167,7 @@ export function StudentPaymentView({
                         <AccordionContent>
                             <ul className="space-y-2 pt-2">
                                 {pendingStudents.map(p => (
-                                    <li key={p.id} className="flex justify-between items-center p-2 rounded-md bg-muted/50">
+                                    <li key={p.id} className={cn("flex justify-between items-center p-2 rounded-md bg-muted/50", p.studentName === CREATOR_NAME && 'text-accent font-bold')}>
                                         <span>{p.studentName}</span>
                                         <Badge variant="default">Pending</Badge>
                                     </li>
