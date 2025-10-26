@@ -20,18 +20,18 @@ if (!defaultQrCode) {
 const LOCAL_STORAGE_KEY = 'customQrCode';
 
 export function QrCodeProvider({ children }: { children: ReactNode }) {
-  const [qrCode, setQrCodeState] = useState<ImagePlaceholder>(() => {
-    if (typeof window === 'undefined') {
-      return defaultQrCode;
-    }
+  const [qrCode, setQrCodeState] = useState<ImagePlaceholder>(defaultQrCode);
+
+  useEffect(() => {
     try {
       const storedQrCode = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return storedQrCode ? JSON.parse(storedQrCode) : defaultQrCode;
+      if (storedQrCode) {
+        setQrCodeState(JSON.parse(storedQrCode));
+      }
     } catch (error) {
       console.error('Could not access local storage or parse QR code', error);
-      return defaultQrCode;
     }
-  });
+  }, []);
 
   useEffect(() => {
     try {

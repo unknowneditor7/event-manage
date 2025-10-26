@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { Payment, PaymentSettings } from './definitions';
-import { payments as initialPayments } from './data';
+import { payments as initialPaymentsData } from './data';
 
 interface PaymentContextType {
   payments: Payment[];
@@ -17,38 +17,27 @@ const DEFAULT_AMOUNT = 240;
 const PAYMENT_SETTINGS_KEY = 'paymentSettings';
 const PAYMENTS_DATA_KEY = 'paymentsData';
 
-
-const getInitialPaymentSettings = (): PaymentSettings => {
-  if (typeof window === 'undefined') {
-    return { amount: DEFAULT_AMOUNT };
-  }
-  try {
-    const storedSettings = localStorage.getItem(PAYMENT_SETTINGS_KEY);
-    return storedSettings ? JSON.parse(storedSettings) : { amount: DEFAULT_AMOUNT };
-  } catch (error) {
-    console.error('Could not access local storage for payment settings', error);
-    return { amount: DEFAULT_AMOUNT };
-  }
-};
-
-const getInitialPayments = (settings: PaymentSettings): Payment[] => {
-    if (typeof window === 'undefined') {
-        return initialPayments.map(p => ({...p, amount: settings.amount}));
-    }
-    try {
-        const storedPayments = localStorage.getItem(PAYMENTS_DATA_KEY);
-        if (storedPayments) {
-            return JSON.parse(storedPayments);
-        }
-    } catch (error) {
-        console.error('Could not access local storage for payments data', error);
-    }
-    return initialPayments.map(p => ({...p, amount: settings.amount}));
-}
+const initialSettings = { amount: DEFAULT_AMOUNT };
+const initialPayments = initialPaymentsData.map(p => ({...p, amount: initialSettings.amount}));
 
 export function PaymentProvider({ children }: { children: ReactNode }) {
-  const [paymentSettings, setPaymentSettingsState] = useState<PaymentSettings>(getInitialPaymentSettings);
-  const [payments, setPayments] = useState<Payment[]>(() => getInitialPayments(paymentSettings));
+  const [paymentSettings, setPaymentSettingsState] = useState<PaymentSettings>(initialSettings);
+  const [payments, setPayments] = useState<Payment[]>(initialPayments);
+
+  useEffect(() => {
+    try {
+      const storedSettings = localStorage.getItem(PAYMENT_SETTINGS_KEY);
+      const settings = storedSettings ? JSON.parse(storedSettings) : initialSettings;
+      setPaymentSettingsState(settings);
+
+      const storedPayments = localStorage.getItem(PAYMENTS_DATA_KEY);
+      const paymentsData = storedPayments ? JSON.parse(storedPayments) : initialPaymentsData.map(p => ({...p, amount: settings.amount}));
+      setPayments(paymentsData);
+
+    } catch (error) {
+      console.error('Could not access local storage for payment data', error);
+    }
+  }, []);
 
   useEffect(() => {
     try {

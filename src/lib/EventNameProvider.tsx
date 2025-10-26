@@ -13,18 +13,18 @@ const DEFAULT_EVENT_NAME = 'FestPay';
 const LOCAL_STORAGE_KEY = 'eventName';
 
 export function EventNameProvider({ children }: { children: ReactNode }) {
-  const [eventName, setEventNameState] = useState<string>(() => {
-    if (typeof window === 'undefined') {
-      return DEFAULT_EVENT_NAME;
-    }
+  const [eventName, setEventNameState] = useState<string>(DEFAULT_EVENT_NAME);
+
+  useEffect(() => {
     try {
       const storedName = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return storedName ? storedName : DEFAULT_EVENT_NAME;
+      if (storedName) {
+        setEventNameState(storedName);
+      }
     } catch (error) {
       console.error('Could not access local storage for event name', error);
-      return DEFAULT_EVENT_NAME;
     }
-  });
+  }, []);
 
   useEffect(() => {
     try {
