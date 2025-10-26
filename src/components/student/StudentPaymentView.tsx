@@ -20,7 +20,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '../ui/badge';
-import { CheckCircle, Clock, Loader2 } from 'lucide-react';
+import { CheckCircle, Clock, Loader2, Download } from 'lucide-react';
 import { usePaymentContext } from '@/lib/PaymentProvider';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -76,6 +76,33 @@ export function StudentPaymentView({
     }
   };
 
+  const handleDownloadQr = async () => {
+    try {
+      // For cross-origin images, we need to fetch them first.
+      const response = await fetch(qrCode.imageUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `festpay-qr-code.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+       console.error("QR Code download failed:", error);
+       toast({
+         variant: 'destructive',
+         title: 'Download Failed',
+         description: 'Could not download the QR code image. Please try again or take a screenshot.',
+       });
+    }
+  };
+
+
   const selectedStudentPayment = payments.find(p => p.studentId === selectedStudentId);
   const CREATOR_NAME = 'Vishwa S';
 
@@ -117,14 +144,19 @@ export function StudentPaymentView({
               />
             </div>
             
-            <Button 
-                onClick={handleConfirmPayment} 
-                disabled={!selectedStudentId || isPaying || selectedStudentPayment?.status === 'completed'} 
-                className="w-full"
-            >
-                {isPaying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {selectedStudentPayment?.status === 'completed' ? 'Payment Completed' : 'Confirm Payment'}
-            </Button>
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2">
+                <Button onClick={handleDownloadQr} variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download QR
+                </Button>
+                <Button 
+                    onClick={handleConfirmPayment} 
+                    disabled={!selectedStudentId || isPaying || selectedStudentPayment?.status === 'completed'} 
+                >
+                    {isPaying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {selectedStudentPayment?.status === 'completed' ? 'Payment Completed' : 'Confirm Payment'}
+                </Button>
+            </div>
             
             <p className="text-sm text-muted-foreground text-center">
               After paying, click the confirm button above.
