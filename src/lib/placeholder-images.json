@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "qr-code-1",
+      "description": "Google Pay QR Code for FestPay",
+      "imageUrl": "https://images.unsplash.com/photo-1564865878688-9a244444042a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwYXltZW50JTIwUVIlMjBjb2RlfGVufDB8fHx8MTc2MTQ2MTAzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "payment QR code"
+    }
+  ]
 }
