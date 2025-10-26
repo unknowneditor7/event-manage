@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import type { Student, Payment } from '@/lib/definitions';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import Image from 'next/image';
@@ -20,22 +21,60 @@ import {
 import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '../ui/badge';
-import { CheckCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock, Loader2 } from 'lucide-react';
+import { usePaymentContext } from '@/lib/PaymentProvider';
+import { Button } from '../ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface StudentPaymentViewProps {
   students: Student[];
-  payments: Payment[];
   qrCodeImage: ImagePlaceholder;
 }
 
 export function StudentPaymentView({
   students,
-  payments,
   qrCodeImage,
 }: StudentPaymentViewProps) {
-
+  const { payments, updatePayment } = usePaymentContext();
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [isPaying, setIsPaying] = useState(false);
+  const { toast } = useToast();
+  
   const paidStudents = payments.filter(p => p.status === 'completed');
   const pendingStudents = payments.filter(p => p.status === 'pending');
+
+  const handleConfirmPayment = () => {
+    if (!selectedStudentId) {
+        toast({
+            variant: "destructive",
+            title: "No student selected",
+            description: "Please select your name before confirming payment.",
+        });
+        return;
+    }
+
+    const paymentToUpdate = payments.find(p => p.studentId === selectedStudentId);
+    if (paymentToUpdate && paymentToUpdate.status === 'pending') {
+        setIsPaying(true);
+        // Simulate a delay for payment processing
+        setTimeout(() => {
+            updatePayment(paymentToUpdate.id);
+            toast({
+                title: "Payment Successful!",
+                description: "Your payment has been marked as completed.",
+            });
+            setIsPaying(false);
+        }, 1500);
+    } else if (paymentToUpdate?.status === 'completed') {
+         toast({
+            variant: "default",
+            title: "Already Paid",
+            description: "This student's payment is already marked as completed.",
+        });
+    }
+  };
+
+  const selectedStudentPayment = payments.find(p => p.studentId === selectedStudentId);
 
   return (
     <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -44,13 +83,13 @@ export function StudentPaymentView({
           <CardHeader className="text-center">
             <CardTitle className="font-headline text-3xl">Pay Your Fee</CardTitle>
             <CardDescription>
-              Select your name and scan the QR code to pay ₹240.00
+              Select your name, scan the QR code to pay ₹240.00, then confirm.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">
             <div className="w-full space-y-2">
               <Label htmlFor="student-select">Select Your Name</Label>
-              <Select>
+              <Select onValueChange={setSelectedStudentId} value={selectedStudentId || ''}>
                 <SelectTrigger id="student-select" className="w-full">
                   <SelectValue placeholder="-- Please select your name --" />
                 </SelectTrigger>
@@ -74,8 +113,18 @@ export function StudentPaymentView({
                 className="rounded-md"
               />
             </div>
+            
+            <Button 
+                onClick={handleConfirmPayment} 
+                disabled={!selectedStudentId || isPaying || selectedStudentPayment?.status === 'completed'} 
+                className="w-full"
+            >
+                {isPaying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {selectedStudentPayment?.status === 'completed' ? 'Payment Completed' : 'Confirm Payment'}
+            </Button>
+            
             <p className="text-sm text-muted-foreground text-center">
-              Scan with any UPI app to complete the payment.
+              After paying, click the confirm button above.
             </p>
           </CardContent>
         </Card>

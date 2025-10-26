@@ -6,11 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PaymentStatusTable from './PaymentStatusTable';
 import QrCodeManager from './QrCodeManager';
 import DataIntegrityChecker from './DataIntegrityChecker';
-import { useState, useCallback } from 'react';
 import { Lock } from 'lucide-react';
+import { usePaymentContext } from '@/lib/PaymentProvider';
 
 interface AdminDashboardProps {
-  initialPayments: Payment[];
   qrCode: ImagePlaceholder;
   onQrCodeChange: (newQrCode: ImagePlaceholder) => void;
   firestoreLogs: string;
@@ -18,19 +17,12 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({
-  initialPayments,
   qrCode,
   onQrCodeChange,
   firestoreLogs,
   isAdmin,
 }: AdminDashboardProps) {
-    const [payments, setPayments] = useState<Payment[]>(initialPayments);
-
-    const handlePaymentUpdate = useCallback((updatedPaymentId: string) => {
-        setPayments(prevPayments => prevPayments.map(p => 
-            p.id === updatedPaymentId ? { ...p, status: 'completed' } : p
-        ));
-    }, []);
+    const { payments, updatePayment } = usePaymentContext();
 
   return (
     <Tabs defaultValue="status">
@@ -51,7 +43,7 @@ export default function AdminDashboard({
       </TabsList>
 
       <TabsContent value="status">
-        <PaymentStatusTable payments={payments} onPaymentUpdate={handlePaymentUpdate} />
+        <PaymentStatusTable payments={payments} onPaymentUpdate={updatePayment} />
       </TabsContent>
 
       

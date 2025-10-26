@@ -1,11 +1,10 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { payments, firestoreLogs } from '@/lib/data';
+import { firestoreLogs } from '@/lib/data';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import { Loader2 } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
-import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { useQrCodeContext } from '@/lib/QrCodeProvider';
 
 export default function AdminPage() {
@@ -26,12 +25,6 @@ export default function AdminPage() {
       </div>
     );
   }
-
-  const allPayments = payments;
-  
-  if (!qrCode) {
-    return <div>Error: QR Code image not found.</div>;
-  }
   
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -40,7 +33,6 @@ export default function AdminPage() {
         <p className="text-muted-foreground">Manage payments, QR codes, and data integrity.</p>
       </header>
       <AdminDashboard
-        initialPayments={allPayments}
         qrCode={qrCode}
         onQrCodeChange={setQrCode}
         firestoreLogs={firestoreLogs}

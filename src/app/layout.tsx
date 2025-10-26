@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/lib/auth';
 import { QrCodeProvider } from '@/lib/QrCodeProvider';
+import { PaymentProvider } from '@/lib/PaymentProvider';
 
 export const metadata: Metadata = {
   title: 'FestPay',
@@ -26,9 +27,11 @@ export default function RootLayout({
       <body className="font-body antialiased min-h-screen flex flex-col">
         <AuthProvider>
           <QrCodeProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Toaster />
+            <PaymentProvider>
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Toaster />
+            </PaymentProvider>
           </QrCodeProvider>
         </AuthProvider>
       </body>
