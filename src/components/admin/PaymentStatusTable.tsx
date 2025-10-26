@@ -17,13 +17,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { updatePaymentStatus } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
+import { useAuthContext } from '@/lib/auth';
 
 function SubmitButton({ payment }: { payment: Payment }) {
   const { pending } = useFormStatus();
   return (
-    <Button size="sm" type="submit" disabled={pending || payment.status === 'completed'}>
+    <Button
+      size="sm"
+      type="submit"
+      disabled={pending}
+      variant={payment.status === 'completed' ? 'secondary' : 'default'}
+    >
       {pending ? (
         <Loader2 className="animate-spin" />
+      ) : payment.status === 'completed' ? (
+        'Mark as Pending'
       ) : (
         'Mark as Complete'
       )}
@@ -31,15 +39,15 @@ function SubmitButton({ payment }: { payment: Payment }) {
   );
 }
 
-export default function PaymentStatusTable({ payments, onPaymentUpdate }: { payments: Payment[], onPaymentUpdate: (paymentId: string) => void }) {
+export default function PaymentStatusTable({ payments, onPaymentUpdate }: { payments: Payment[], onPaymentUpdate: (paymentId: string, status: 'completed' | 'pending') => void }) {
   const { toast } = useToast();
+  const { isAdmin } = useAuthContext();
   const [state, formAction] = useActionState(updatePaymentStatus, { status: 'idle', message: '' });
 
   useEffect(() => {
-    if (state.status === 'success') {
+    if (state.status === 'success' && state.paymentId && state.newStatus) {
       toast({ title: "Success", description: state.message });
-      const paymentId = state.message.split(' ')[1]; // Get ID from message "Payment [id] marked..."
-      if (paymentId) onPaymentUpdate(paymentId);
+      onPaymentUpdate(state.paymentId, state.newStatus);
     } else if (state.status === 'error') {
       toast({ variant: 'destructive', title: "Error", description: state.message });
     }
@@ -78,13 +86,14 @@ export default function PaymentStatusTable({ payments, onPaymentUpdate }: { paym
                 </TableCell>
                 <TableCell>{new Date(payment.timestamp).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
-                  {payment.status === 'pending' ? (
+                  {isAdmin ? (
                      <form action={formAction}>
                         <input type="hidden" name="paymentId" value={payment.id} />
+                        <input type="hidden" name="currentStatus" value={payment.status} />
                         <SubmitButton payment={payment} />
                     </form>
                   ) : (
-                    <span className="text-sm text-muted-foreground">Completed</span>
+                    <span className="text-sm text-muted-foreground capitalize">{payment.status}</span>
                   )}
                 </TableCell>
               </TableRow>

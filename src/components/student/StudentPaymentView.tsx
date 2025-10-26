@@ -58,7 +58,7 @@ export function StudentPaymentView({
         setIsPaying(true);
         // Simulate a delay for payment processing
         setTimeout(() => {
-            updatePayment(paymentToUpdate.id);
+            updatePayment(paymentToUpdate.id, 'completed');
             toast({
                 title: "Payment Successful!",
                 description: "Your payment has been marked as completed.",

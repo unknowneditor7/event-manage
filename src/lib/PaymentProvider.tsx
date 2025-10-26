@@ -6,7 +6,7 @@ import { payments as initialPayments } from './data';
 
 interface PaymentContextType {
   payments: Payment[];
-  updatePayment: (paymentId: string) => void;
+  updatePayment: (paymentId: string, status: 'completed' | 'pending') => void;
 }
 
 const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
@@ -14,10 +14,10 @@ const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
 export function PaymentProvider({ children }: { children: ReactNode }) {
   const [payments, setPayments] = useState<Payment[]>(initialPayments);
 
-  const updatePayment = (paymentId: string) => {
+  const updatePayment = (paymentId: string, status: 'completed' | 'pending') => {
     setPayments(prevPayments =>
       prevPayments.map(p =>
-        p.id === paymentId ? { ...p, status: 'completed' } : p
+        p.id === paymentId ? { ...p, status } : p
       )
     );
   };

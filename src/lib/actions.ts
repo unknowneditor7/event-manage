@@ -8,6 +8,8 @@ import type { DataIntegrityOutput } from '@/ai/flows/data-integrity-validation';
 export type ActionState = {
   status: 'success' | 'error';
   message: string;
+  paymentId?: string;
+  newStatus?: 'completed' | 'pending';
 } | {
   status: 'idle';
   message: '';
@@ -20,9 +22,11 @@ export type DataIntegrityState = {
 };
 
 // Simulate a database update
-const fakeDbUpdate = async (paymentId: string) => {
-  console.log(`Updating payment ${paymentId} to 'completed' in the database.`);
-  console.log(`Sending receipt for payment ${paymentId}.`);
+const fakeDbUpdate = async (paymentId: string, status: 'completed' | 'pending') => {
+  console.log(`Updating payment ${paymentId} to '${status}' in the database.`);
+  if (status === 'completed') {
+    console.log(`Sending receipt for payment ${paymentId}.`);
+  }
   await new Promise(resolve => setTimeout(resolve, 1000));
   return { success: true };
 }
@@ -30,25 +34,32 @@ const fakeDbUpdate = async (paymentId: string) => {
 export async function updatePaymentStatus(prevState: ActionState, formData: FormData): Promise<ActionState> {
   const schema = z.object({
     paymentId: z.string(),
+    currentStatus: z.enum(['pending', 'completed']),
   });
 
   const validatedFields = schema.safeParse({
     paymentId: formData.get('paymentId'),
+    currentStatus: formData.get('currentStatus'),
   });
 
   if (!validatedFields.success) {
     return {
       status: 'error',
-      message: 'Invalid payment ID.',
+      message: 'Invalid payment data.',
     };
   }
 
+  const { paymentId, currentStatus } = validatedFields.data;
+  const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+
   try {
-    await fakeDbUpdate(validatedFields.data.paymentId);
+    await fakeDbUpdate(paymentId, newStatus);
     revalidatePath('/admin');
     return {
       status: 'success',
-      message: `Payment ${validatedFields.data.paymentId} marked as completed.`,
+      message: `Payment ${paymentId} marked as ${newStatus}.`,
+      paymentId,
+      newStatus,
     };
   } catch (error) {
     return {
