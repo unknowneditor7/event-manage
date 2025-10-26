@@ -4,19 +4,20 @@ import { initializeFirebase } from '@/firebase/index';
 import { FirebaseProvider } from '@/firebase/provider';
 import {
   FirebaseApp,
-  Auth,
-  Firestore,
 } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
+
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 
 if (typeof window !== 'undefined') {
-  const a = initializeFirebase();
-  app = a.app;
-  auth = a.auth;
-  firestore = a.firestore;
+  const services = initializeFirebase();
+  app = services.app;
+  auth = services.auth;
+  firestore = services.firestore;
 }
 
 export function FirebaseClientProvider({

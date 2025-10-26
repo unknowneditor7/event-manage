@@ -1,11 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { Ticket, LogOut, LogIn } from 'lucide-react';
-import { useUser, useAuth } from '@/firebase';
-import { signOut } from 'firebase/auth';
+import { Ticket, LogOut, LogIn, UserCircle } from 'lucide-react';
+import { useAuthContext } from '@/lib/auth';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,28 +15,11 @@ import {
 } from './ui/dropdown-menu';
 
 export function Header() {
-  const { user, loading } = useUser();
-  const auth = useAuth();
+  const { isAdmin, logout, loading } = useAuthContext();
   const router = useRouter();
-
-  const handleSignOut = async () => {
-    if (auth) {
-      await signOut(auth);
-      router.push('/');
-    }
-  };
 
   const handleSignIn = () => {
     router.push('/login');
-  };
-
-  const getInitials = (name?: string | null) => {
-    if (!name) return 'U';
-    const names = name.split(' ');
-    return names
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join('');
   };
 
   return (
@@ -67,25 +49,23 @@ export function Header() {
           <div className="w-px h-6 bg-border" />
           {loading ? (
             <div className="w-8 h-8 bg-muted-foreground/50 rounded-full animate-pulse" />
-          ) : user ? (
+          ) : isAdmin ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                    <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    <AvatarFallback>A</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user.displayName}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    <p className="text-sm font-medium leading-none">Admin</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
+                <DropdownMenuItem onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
