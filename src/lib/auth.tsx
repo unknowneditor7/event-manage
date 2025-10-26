@@ -12,7 +12,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ADMIN_USERNAME = 'vishwa';
+const ADMIN_USERNAME = 'vishwa s';
 const ADMIN_PASSWORD = '1004';
 
 export function AuthProvider({ children }: { children: ReactNode }) {

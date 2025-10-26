@@ -56,7 +56,7 @@ export default function LoginPage() {
               <Input
                 id="username"
                 type="text"
-                placeholder="vishwa"
+                placeholder="vishwa s"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
