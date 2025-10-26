@@ -1,20 +1,17 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { payments, firestoreLogs } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import { Loader2 } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
+import { useQrCodeContext } from '@/lib/QrCodeProvider';
 
 export default function AdminPage() {
   const { isAdmin, loading } = useAuthContext();
   const router = useRouter();
-  const [qrCode, setQrCode] = useState<ImagePlaceholder | undefined>(
-    PlaceHolderImages.find((img) => img.id === 'qr-code-1')
-  );
-
+  const { qrCode, setQrCode } = useQrCodeContext();
 
   useEffect(() => {
     if (!loading && !isAdmin) {
