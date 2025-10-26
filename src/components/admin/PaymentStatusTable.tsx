@@ -209,7 +209,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="flex flex-col gap-2">
             <CardTitle className="font-headline">Payment Status</CardTitle>
              <DropdownMenu>
@@ -230,7 +230,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="grid grid-cols-2 gap-4 text-right">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left sm:text-right w-full sm:w-auto">
             <div>
               <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
               <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
@@ -243,50 +243,50 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Student</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Last Update</TableHead>
-              <TableHead className="text-right">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {payments.map((payment) => (
-              <TableRow key={payment.id} className="transition-all" data-status={payment.status}>
-                <TableCell className="font-medium">{payment.studentName}</TableCell>
-                <TableCell>₹{payment.amount.toFixed(2)}</TableCell>
-                <TableCell>
-                  <Badge variant={payment.status === 'completed' ? 'secondary' : 'default'} className="bg-opacity-20 border-opacity-40">
-                    {payment.status === 'completed' ? (
-                      <CheckCircle className="mr-2 text-green-400" />
-                    ) : (
-                      <Clock className="mr-2 text-yellow-400" />
-                    )}
-                    <span className="capitalize">{payment.status}</span>
-                  </Badge>
-                </TableCell>
-                <TableCell>{new Date(payment.timestamp).toLocaleDateString()}</TableCell>
-                <TableCell className="text-right">
-                  {isAdmin ? (
-                     <form action={formAction}>
-                        <input type="hidden" name="paymentId" value={payment.id} />
-                        <input type="hidden" name="currentStatus" value={payment.status} />
-                        <SubmitButton payment={payment} />
-                    </form>
-                  ) : (
-                    <span className="text-sm text-muted-foreground capitalize">{payment.status}</span>
-                  )}
-                </TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden sm:table-cell">Last Update</TableHead>
+                <TableHead className="text-right">Action</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {payments.map((payment) => (
+                <TableRow key={payment.id} className="transition-all" data-status={payment.status}>
+                  <TableCell className="font-medium">{payment.studentName}</TableCell>
+                  <TableCell>₹{payment.amount.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <Badge variant={payment.status === 'completed' ? 'secondary' : 'default'} className="bg-opacity-20 border-opacity-40 whitespace-nowrap">
+                      {payment.status === 'completed' ? (
+                        <CheckCircle className="mr-2 text-green-400" />
+                      ) : (
+                        <Clock className="mr-2 text-yellow-400" />
+                      )}
+                      <span className="capitalize">{payment.status}</span>
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">{new Date(payment.timestamp).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right">
+                    {isAdmin ? (
+                      <form action={formAction}>
+                          <input type="hidden" name="paymentId" value={payment.id} />
+                          <input type="hidden" name="currentStatus" value={payment.status} />
+                          <SubmitButton payment={payment} />
+                      </form>
+                    ) : (
+                      <span className="text-sm text-muted-foreground capitalize">{payment.status}</span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );
 }
-
-    

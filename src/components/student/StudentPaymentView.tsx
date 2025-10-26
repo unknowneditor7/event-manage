@@ -121,7 +121,7 @@ export function StudentPaymentView({
   const CREATOR_NAME = 'Vishwa S';
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8 items-start">
+    <div className="grid md:grid-cols-2 gap-8 items-start">
       <div className="flex justify-center">
         <Card className="w-full max-w-md shadow-lg shadow-primary/10">
           <CardHeader className="text-center">
@@ -183,12 +183,12 @@ export function StudentPaymentView({
        {isClient && (
         <Card>
             <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                   <div>
                       <CardTitle className='font-headline'>Payment Status</CardTitle>
                       <CardDescription>Status of all student payments.</CardDescription>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 text-right">
+                  <div className="grid grid-cols-2 gap-4 text-left sm:text-right w-full sm:w-auto">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Collected</p>
                       <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>

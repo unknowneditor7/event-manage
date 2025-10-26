@@ -25,7 +25,7 @@ export default function AdminPage() {
   }
   
   return (
-    <div className="container mx-auto p-4 md:p-8">
+    <div className="container mx-auto p-2 sm:p-4 md:p-8">
       <header className="mb-8">
         <h1 className="text-4xl font-bold font-headline">Admin Dashboard</h1>
         <p className="text-muted-foreground">Manage payments, QR codes, and data integrity.</p>
