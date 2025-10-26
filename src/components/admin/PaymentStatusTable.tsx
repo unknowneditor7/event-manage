@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { updatePaymentStatus } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthContext } from '@/lib/auth';
+import { usePaymentContext } from '@/lib/PaymentProvider';
 
 function SubmitButton({ payment }: { payment: Payment }) {
   const { pending } = useFormStatus();
@@ -39,19 +40,20 @@ function SubmitButton({ payment }: { payment: Payment }) {
   );
 }
 
-export default function PaymentStatusTable({ payments, onPaymentUpdate }: { payments: Payment[], onPaymentUpdate: (paymentId: string, status: 'completed' | 'pending') => void }) {
+export default function PaymentStatusTable({ payments }: { payments: Payment[] }) {
   const { toast } = useToast();
   const { isAdmin } = useAuthContext();
+  const { updatePayment } = usePaymentContext();
   const [state, formAction] = useActionState(updatePaymentStatus, { status: 'idle', message: '' });
 
   useEffect(() => {
     if (state.status === 'success' && state.paymentId && state.newStatus) {
       toast({ title: "Success", description: state.message });
-      onPaymentUpdate(state.paymentId, state.newStatus);
+      updatePayment(state.paymentId, state.newStatus);
     } else if (state.status === 'error') {
       toast({ variant: 'destructive', title: "Error", description: state.message });
     }
-  }, [state, toast, onPaymentUpdate]);
+  }, [state, toast, updatePayment]);
 
   return (
     <Card>

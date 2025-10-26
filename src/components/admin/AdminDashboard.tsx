@@ -17,7 +17,7 @@ export default function AdminDashboard({
   firestoreLogs,
   isAdmin,
 }: AdminDashboardProps) {
-    const { payments, updatePayment } = usePaymentContext();
+    const { payments } = usePaymentContext();
 
   return (
     <Tabs defaultValue="status">
@@ -38,7 +38,7 @@ export default function AdminDashboard({
       </TabsList>
 
       <TabsContent value="status">
-        <PaymentStatusTable payments={payments} onPaymentUpdate={updatePayment} />
+        <PaymentStatusTable payments={payments} />
       </TabsContent>
 
       
