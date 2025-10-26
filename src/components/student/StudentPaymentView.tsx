@@ -111,7 +111,7 @@ export function StudentPaymentView({
   const CREATOR_NAME = 'Vishwa S';
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 items-start">
+    <div className="grid lg:grid-cols-2 gap-8 items-start">
       <div className="flex justify-center">
         <Card className="w-full max-w-md shadow-lg shadow-primary/10">
           <CardHeader className="text-center">
