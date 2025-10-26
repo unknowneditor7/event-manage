@@ -1,19 +1,21 @@
 'use client';
 import Link from 'next/link';
 import { Ticket, LogOut, LogIn } from 'lucide-react';
-import { useUser } from '@/firebase';
-import { getAuth, signOut } from 'firebase/auth';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 
 export function Header() {
   const { user, loading } = useUser();
   const router = useRouter();
-  const auth = getAuth();
+  const auth = useAuth();
 
   const handleSignOut = async () => {
-    await signOut(auth);
-    router.push('/');
+    if (auth) {
+      await signOut(auth);
+      router.push('/');
+    }
   };
 
   const handleSignIn = () => {

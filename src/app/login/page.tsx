@@ -1,15 +1,15 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useUser } from '@/firebase';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useUser, useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LoginPage() {
   const { user, loading } = useUser();
   const router = useRouter();
-  const auth = getAuth();
+  const auth = useAuth();
 
   useEffect(() => {
     if (!loading && user) {
@@ -18,12 +18,14 @@ export default function LoginPage() {
   }, [user, loading, router]);
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      router.push('/admin');
-    } catch (error) {
-      console.error('Error signing in with Google: ', error);
+    if (auth) {
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        router.push('/admin');
+      } catch (error) {
+        console.error('Error signing in with Google: ', error);
+      }
     }
   };
   
