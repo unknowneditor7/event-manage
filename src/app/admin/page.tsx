@@ -1,15 +1,20 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { payments, firestoreLogs } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import { Loader2 } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
+import type { ImagePlaceholder } from '@/lib/placeholder-images';
 
 export default function AdminPage() {
   const { isAdmin, loading } = useAuthContext();
   const router = useRouter();
+  const [qrCode, setQrCode] = useState<ImagePlaceholder | undefined>(
+    PlaceHolderImages.find((img) => img.id === 'qr-code-1')
+  );
+
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -26,9 +31,8 @@ export default function AdminPage() {
   }
 
   const allPayments = payments;
-  const qrCodeImage = PlaceHolderImages.find((img) => img.id === 'qr-code-1');
-
-  if (!qrCodeImage) {
+  
+  if (!qrCode) {
     return <div>Error: QR Code image not found.</div>;
   }
   
@@ -40,7 +44,8 @@ export default function AdminPage() {
       </header>
       <AdminDashboard
         initialPayments={allPayments}
-        initialQrCode={qrCodeImage}
+        qrCode={qrCode}
+        onQrCodeChange={setQrCode}
         firestoreLogs={firestoreLogs}
         isAdmin={isAdmin}
       />

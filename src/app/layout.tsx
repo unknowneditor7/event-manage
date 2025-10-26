@@ -3,7 +3,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/lib/auth';
-import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { QrCodeProvider } from '@/lib/QrCodeProvider';
 
 export const metadata: Metadata = {
   title: 'FestPay',
@@ -24,13 +24,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
-        <FirebaseClientProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <QrCodeProvider>
             <Header />
             <main className="flex-1">{children}</main>
             <Toaster />
-          </AuthProvider>
-        </FirebaseClientProvider>
+          </QrCodeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

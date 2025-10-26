@@ -11,14 +11,16 @@ import { Lock } from 'lucide-react';
 
 interface AdminDashboardProps {
   initialPayments: Payment[];
-  initialQrCode: ImagePlaceholder;
+  qrCode: ImagePlaceholder;
+  onQrCodeChange: (newQrCode: ImagePlaceholder) => void;
   firestoreLogs: string;
   isAdmin: boolean;
 }
 
 export default function AdminDashboard({
   initialPayments,
-  initialQrCode,
+  qrCode,
+  onQrCodeChange,
   firestoreLogs,
   isAdmin,
 }: AdminDashboardProps) {
@@ -55,7 +57,7 @@ export default function AdminDashboard({
       
       <TabsContent value="qr">
         {isAdmin ? (
-          <QrCodeManager initialQrCode={initialQrCode} />
+          <QrCodeManager qrCode={qrCode} onQrCodeChange={onQrCodeChange} />
         ) : null}
       </TabsContent>
 

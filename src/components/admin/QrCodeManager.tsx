@@ -10,8 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Upload } from 'lucide-react';
 
-export default function QrCodeManager({ initialQrCode }: { initialQrCode: ImagePlaceholder }) {
-  const [qrCodeUrl, setQrCodeUrl] = useState(initialQrCode.imageUrl);
+export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: ImagePlaceholder, onQrCodeChange: (newQrCode: ImagePlaceholder) => void }) {
   const [newQrCodeUrl, setNewQrCodeUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -20,7 +19,7 @@ export default function QrCodeManager({ initialQrCode }: { initialQrCode: ImageP
     e.preventDefault();
     try {
       if (newQrCodeUrl.trim() && new URL(newQrCodeUrl)) {
-        setQrCodeUrl(newQrCodeUrl);
+        onQrCodeChange({ ...qrCode, imageUrl: newQrCodeUrl });
         toast({
           title: 'QR Code Updated',
           description: 'The new QR code is now active.',
@@ -44,7 +43,7 @@ export default function QrCodeManager({ initialQrCode }: { initialQrCode: ImageP
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setQrCodeUrl(result);
+        onQrCodeChange({ ...qrCode, imageUrl: result });
         toast({
           title: 'QR Code Updated',
           description: 'The new QR code is now displayed.',
@@ -68,12 +67,12 @@ export default function QrCodeManager({ initialQrCode }: { initialQrCode: ImageP
         <div className="flex justify-center items-center">
           <div className="p-4 bg-white rounded-lg">
             <Image
-              src={qrCodeUrl}
+              src={qrCode.imageUrl}
               alt="Current QR Code"
               width={250}
               height={250}
               className="rounded-md"
-              key={qrCodeUrl}
+              key={qrCode.imageUrl}
               unoptimized
             />
           </div>

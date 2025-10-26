@@ -1,11 +1,15 @@
+'use client';
+import { useState } from 'react';
 import { students, payments } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 import { StudentPaymentView } from '@/components/student/StudentPaymentView';
 
 export default function Home() {
   const studentList = students;
   const paymentList = payments;
-  const qrCodeImage = PlaceHolderImages.find((img) => img.id === 'qr-code-1');
+  const [qrCodeImage, setQrCodeImage] = useState<ImagePlaceholder | undefined>(
+    PlaceHolderImages.find((img) => img.id === 'qr-code-1')
+  );
 
   if (!qrCodeImage) {
     // Handle case where image is not found, though it should be in our JSON
