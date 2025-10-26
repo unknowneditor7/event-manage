@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { LogOut, LogIn } from 'lucide-react';
+import { LogOut, LogIn, Heart } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -15,26 +15,8 @@ import {
 } from './ui/dropdown-menu';
 
 const VsLogo = () => (
-    <svg
-      className="h-7 w-7 text-accent"
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <text
-        x="50%"
-        y="50%"
-        dominantBaseline="central"
-        textAnchor="middle"
-        fontSize="60"
-        fontWeight="bold"
-        fill="currentColor"
-        className="font-headline"
-      >
-        VS
-      </text>
-    </svg>
-  );
+  <Heart className="h-7 w-7 text-accent fill-accent" />
+);
 
 export function Header() {
   const { isAdmin, logout, loading } = useAuthContext();
