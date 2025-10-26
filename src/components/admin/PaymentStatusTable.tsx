@@ -107,10 +107,10 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
       head: [['Metric', 'Value']],
       body: [
         ['Total Students', payments.length.toString()],
-        ['Payment Amount per Student', `₹${paymentSettings.amount.toFixed(2)}`],
-        ['Total Expected', `₹${totalExpected.toFixed(2)}`],
-        ['Total Collected', `₹${totalCollected.toFixed(2)}`],
-        ['Total Remaining', `₹${remainingAmount.toFixed(2)}`],
+        ['Payment Amount per Student', `Rs. ${paymentSettings.amount.toFixed(2)}`],
+        ['Total Expected', `Rs. ${totalExpected.toFixed(2)}`],
+        ['Total Collected', `Rs. ${totalCollected.toFixed(2)}`],
+        ['Total Remaining', `Rs. ${remainingAmount.toFixed(2)}`],
         ['Paid Students', paidStudents.length.toString()],
         ['Pending Students', pendingStudents.length.toString()],
       ],
@@ -129,7 +129,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
         head: [['Student Name', 'Amount', 'Date']],
         body: paidStudents.map(p => [
           p.studentName, 
-          `₹${p.amount.toFixed(2)}`, 
+          `Rs. ${p.amount.toFixed(2)}`, 
           new Date(p.timestamp).toLocaleDateString()
         ]),
         theme: 'grid',
@@ -147,7 +147,7 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
         head: [['Student Name', 'Amount']],
         body: pendingStudents.map(p => [
           p.studentName, 
-          `₹${p.amount.toFixed(2)}`
+          `Rs. ${p.amount.toFixed(2)}`
         ]),
         theme: 'grid',
         headStyles: { fillColor: [234, 179, 8] },
@@ -289,3 +289,5 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     </Card>
   );
 }
+
+    
