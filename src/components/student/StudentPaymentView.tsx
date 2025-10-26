@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Student, Payment } from '@/lib/definitions';
 import Image from 'next/image';
 import {
@@ -27,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useQrCodeContext } from '@/lib/QrCodeProvider';
 import { cn } from '@/lib/utils';
 import { useEventNameContext } from '@/lib/EventNameProvider';
+import { useAuthContext } from '@/lib/auth';
 
 interface StudentPaymentViewProps {
   students: Student[];
@@ -38,9 +39,15 @@ export function StudentPaymentView({
   const { payments, updatePayment, paymentSettings } = usePaymentContext();
   const { eventName } = useEventNameContext();
   const { qrCode } = useQrCodeContext();
+  const { isAdmin } = useAuthContext();
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
   const { toast } = useToast();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   const paidStudents = payments.filter(p => p.status === 'completed');
   const pendingStudents = payments.filter(p => p.status === 'pending');
@@ -48,6 +55,9 @@ export function StudentPaymentView({
   const totalCollected = payments
     .filter((p) => p.status === 'completed')
     .reduce((sum, p) => sum + p.amount, 0);
+  
+  const totalExpected = students.length * paymentSettings.amount;
+  const remainingAmount = totalExpected - totalCollected;
 
   const handleConfirmPayment = () => {
     if (!selectedStudentId) {
@@ -170,6 +180,7 @@ export function StudentPaymentView({
       </div>
 
       <div className="w-full max-w-md mx-auto">
+       {isClient && (
         <Card>
             <CardHeader>
                 <div className="flex justify-between items-start">
@@ -177,9 +188,15 @@ export function StudentPaymentView({
                       <CardTitle className='font-headline'>Payment Status</CardTitle>
                       <CardDescription>Status of all student payments.</CardDescription>
                   </div>
-                  <div className="text-right">
-                      <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
+                  <div className="grid grid-cols-2 gap-4 text-right">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Collected</p>
                       <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Remaining</p>
+                      <p className="text-2xl font-bold font-headline text-destructive">₹{remainingAmount.toFixed(2)}</p>
+                    </div>
                   </div>
                 </div>
             </CardHeader>
@@ -224,6 +241,7 @@ export function StudentPaymentView({
                 </Accordion>
             </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );

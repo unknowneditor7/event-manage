@@ -43,7 +43,7 @@ function SubmitButton({ payment }: { payment: Payment }) {
 export default function PaymentStatusTable({ payments }: { payments: Payment[] }) {
   const { toast } = useToast();
   const { isAdmin } = useAuthContext();
-  const { updatePayment } = usePaymentContext();
+  const { updatePayment, paymentSettings } = usePaymentContext();
   
   const onAction = async (prevState: { status: string; message: string; }, formData: FormData) => {
     const result = await updatePaymentStatus(prevState, formData);
@@ -62,14 +62,23 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     .filter((p) => p.status === 'completed')
     .reduce((sum, p) => sum + p.amount, 0);
 
+  const totalExpected = payments.length * paymentSettings.amount;
+  const remainingAmount = totalExpected - totalCollected;
+
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="font-headline">Payment Status</CardTitle>
-          <div className="text-right">
-            <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
-            <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
+          <div className="grid grid-cols-2 gap-4 text-right">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
+              <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
+            </div>
+             <div>
+              <p className="text-sm font-medium text-muted-foreground">Remaining</p>
+              <p className="text-2xl font-bold font-headline text-destructive">₹{remainingAmount.toFixed(2)}</p>
+            </div>
           </div>
         </div>
       </CardHeader>
