@@ -1,6 +1,7 @@
 import type { Student, Payment } from './definitions';
 
 export const students: Student[] = [
+  { id: 's36', name: 'Vishwa S' },
   { id: 's1', name: 'Aadhavan E' },
   { id: 's2', name: 'Akash S' },
   { id: 's3', name: 'Balaguru K' },
@@ -36,10 +37,10 @@ export const students: Student[] = [
   { id: 's33', name: 'Vijay Babu B' },
   { id: 's34', name: 'Vishal' },
   { id: 's35', name: 'Vishwa A' },
-  { id: 's36', name: 'Vishwa S' },
 ];
 
 export const payments: Payment[] = [
+  { id: 'p36', studentId: 's36', studentName: 'Vishwa S', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
   { id: 'p1', studentId: 's1', studentName: 'Aadhavan E', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
   { id: 'p2', studentId: 's2', studentName: 'Akash S', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
   { id: 'p3', studentId: 's3', studentName: 'Balaguru K', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
@@ -75,7 +76,6 @@ export const payments: Payment[] = [
   { id: 'p33', studentId: 's33', studentName: 'Vijay Babu B', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
   { id: 'p34', studentId: 's34', studentName: 'Vishal', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
   { id: 'p35', studentId: 's35', studentName: 'Vishwa A', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
-  { id: 'p36', studentId: 's36', studentName: 'Vishwa S', amount: 240, status: 'pending', timestamp: '2023-10-27T09:00:00Z' },
 ];
 
 export const firestoreLogs = `
