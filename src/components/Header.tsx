@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { Ticket, LogOut, LogIn, UserCircle } from 'lucide-react';
+import { LogOut, LogIn } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -14,6 +14,28 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
+const VsLogo = () => (
+    <svg
+      className="h-7 w-7 text-accent"
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <text
+        x="50%"
+        y="50%"
+        dominantBaseline="central"
+        textAnchor="middle"
+        fontSize="60"
+        fontWeight="bold"
+        fill="currentColor"
+        className="font-headline"
+      >
+        VS
+      </text>
+    </svg>
+  );
+
 export function Header() {
   const { isAdmin, logout, loading } = useAuthContext();
   const router = useRouter();
@@ -26,7 +48,7 @@ export function Header() {
     <header className="py-4 px-4 md:px-8 border-b border-white/10 sticky top-0 bg-background/50 backdrop-blur-sm z-20">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <Ticket className="h-7 w-7 text-accent" />
+          <VsLogo />
           <h1 className="text-2xl font-bold font-headline text-foreground">
             vishwa
           </h1>
