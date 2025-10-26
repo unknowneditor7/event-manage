@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import type { Student, Payment } from '@/lib/definitions';
-import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import {
   Card,
@@ -25,17 +24,17 @@ import { CheckCircle, Clock, Loader2 } from 'lucide-react';
 import { usePaymentContext } from '@/lib/PaymentProvider';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useQrCodeContext } from '@/lib/QrCodeProvider';
 
 interface StudentPaymentViewProps {
   students: Student[];
-  qrCodeImage: ImagePlaceholder;
 }
 
 export function StudentPaymentView({
   students,
-  qrCodeImage,
 }: StudentPaymentViewProps) {
   const { payments, updatePayment } = usePaymentContext();
+  const { qrCode } = useQrCodeContext();
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
   const { toast } = useToast();
@@ -105,9 +104,9 @@ export function StudentPaymentView({
 
             <div className="p-4 bg-white rounded-lg">
               <Image
-                src={qrCodeImage.imageUrl}
-                alt={qrCodeImage.description}
-                data-ai-hint={qrCodeImage.imageHint}
+                src={qrCode.imageUrl}
+                alt={qrCode.description}
+                data-ai-hint={qrCode.imageHint}
                 width={300}
                 height={300}
                 className="rounded-md"

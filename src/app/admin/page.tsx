@@ -5,12 +5,10 @@ import { firestoreLogs } from '@/lib/data';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import { Loader2 } from 'lucide-react';
 import { useAuthContext } from '@/lib/auth';
-import { useQrCodeContext } from '@/lib/QrCodeProvider';
 
 export default function AdminPage() {
   const { isAdmin, loading } = useAuthContext();
   const router = useRouter();
-  const { qrCode, setQrCode } = useQrCodeContext();
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -33,8 +31,6 @@ export default function AdminPage() {
         <p className="text-muted-foreground">Manage payments, QR codes, and data integrity.</p>
       </header>
       <AdminDashboard
-        qrCode={qrCode}
-        onQrCodeChange={setQrCode}
         firestoreLogs={firestoreLogs}
         isAdmin={isAdmin}
       />

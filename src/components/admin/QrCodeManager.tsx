@@ -2,15 +2,16 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload } from 'lucide-react';
+import { Upload, Trash2 } from 'lucide-react';
+import { useQrCodeContext } from '@/lib/QrCodeProvider';
 
-export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: ImagePlaceholder, onQrCodeChange: (newQrCode: ImagePlaceholder) => void }) {
+export default function QrCodeManager() {
+  const { qrCode, setQrCode, deleteQrCode } = useQrCodeContext();
   const [newQrCodeUrl, setNewQrCodeUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -19,7 +20,7 @@ export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: Imag
     e.preventDefault();
     try {
       if (newQrCodeUrl.trim() && new URL(newQrCodeUrl)) {
-        onQrCodeChange({ ...qrCode, imageUrl: newQrCodeUrl });
+        setQrCode({ ...qrCode, imageUrl: newQrCodeUrl });
         toast({
           title: 'QR Code Updated',
           description: 'The new QR code is now active.',
@@ -43,7 +44,7 @@ export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: Imag
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        onQrCodeChange({ ...qrCode, imageUrl: result });
+        setQrCode({ ...qrCode, imageUrl: result });
         toast({
           title: 'QR Code Updated',
           description: 'The new QR code is now displayed.',
@@ -57,6 +58,14 @@ export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: Imag
     fileInputRef.current?.click();
   };
 
+  const handleDelete = () => {
+    deleteQrCode();
+    toast({
+      title: 'QR Code Deleted',
+      description: 'The custom QR code has been removed and reset to the default.',
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -64,7 +73,7 @@ export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: Imag
         <CardDescription>Update the payment QR code for students.</CardDescription>
       </CardHeader>
       <CardContent className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="flex justify-center items-center">
+        <div className="flex flex-col justify-center items-center gap-4">
           <div className="p-4 bg-white rounded-lg">
             <Image
               src={qrCode.imageUrl}
@@ -76,6 +85,10 @@ export default function QrCodeManager({ qrCode, onQrCodeChange }: { qrCode: Imag
               unoptimized
             />
           </div>
+          <Button onClick={handleDelete} variant="destructive" size="sm">
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Custom QR
+          </Button>
         </div>
         <div className="space-y-6">
           <form onSubmit={handleUrlSubmit} className="space-y-4">

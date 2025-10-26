@@ -1,7 +1,6 @@
 'use client';
 
 import type { Payment } from '@/lib/definitions';
-import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PaymentStatusTable from './PaymentStatusTable';
 import QrCodeManager from './QrCodeManager';
@@ -10,15 +9,11 @@ import { Lock } from 'lucide-react';
 import { usePaymentContext } from '@/lib/PaymentProvider';
 
 interface AdminDashboardProps {
-  qrCode: ImagePlaceholder;
-  onQrCodeChange: (newQrCode: ImagePlaceholder) => void;
   firestoreLogs: string;
   isAdmin: boolean;
 }
 
 export default function AdminDashboard({
-  qrCode,
-  onQrCodeChange,
   firestoreLogs,
   isAdmin,
 }: AdminDashboardProps) {
@@ -49,7 +44,7 @@ export default function AdminDashboard({
       
       <TabsContent value="qr">
         {isAdmin ? (
-          <QrCodeManager qrCode={qrCode} onQrCodeChange={onQrCodeChange} />
+          <QrCodeManager />
         ) : null}
       </TabsContent>
 
