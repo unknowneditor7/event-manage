@@ -250,7 +250,6 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
                 <TableHead>Student</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="hidden sm:table-cell">Last Update</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -269,7 +268,6 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
                       <span className="capitalize">{payment.status}</span>
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell">{new Date(payment.timestamp).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
                     {isAdmin ? (
                       <form action={formAction}>
