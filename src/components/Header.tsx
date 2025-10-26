@@ -1,27 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { Ticket, LogOut, LogIn } from 'lucide-react';
-import { useUser, useAuth } from '@/firebase';
-import { signOut } from 'firebase/auth';
-import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
+import { Ticket } from 'lucide-react';
 
 export function Header() {
-  const { user, loading } = useUser();
-  const router = useRouter();
-  const auth = useAuth();
-
-  const handleSignOut = async () => {
-    if (auth) {
-      await signOut(auth);
-      router.push('/');
-    }
-  };
-
-  const handleSignIn = () => {
-    router.push('/login');
-  };
-
   return (
     <header className="py-4 px-4 md:px-8 border-b border-white/10 sticky top-0 bg-background/50 backdrop-blur-sm z-20">
       <div className="container mx-auto flex justify-between items-center">
@@ -46,18 +27,6 @@ export function Header() {
               Admin
             </Link>
           </nav>
-          <div>
-            {!loading &&
-              (user ? (
-                <Button variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
-                  <LogOut />
-                </Button>
-              ) : (
-                <Button variant="ghost" size="icon" onClick={handleSignIn} aria-label="Sign in">
-                  <LogIn />
-                </Button>
-              ))}
-          </div>
         </div>
       </div>
     </header>
