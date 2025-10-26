@@ -12,12 +12,14 @@ interface AdminDashboardProps {
   initialPayments: Payment[];
   initialQrCode: ImagePlaceholder;
   firestoreLogs: string;
+  isAdmin: boolean;
 }
 
 export default function AdminDashboard({
   initialPayments,
   initialQrCode,
   firestoreLogs,
+  isAdmin,
 }: AdminDashboardProps) {
     const [payments, setPayments] = useState<Payment[]>(initialPayments);
 
@@ -29,23 +31,27 @@ export default function AdminDashboard({
 
   return (
     <Tabs defaultValue="status">
-      <TabsList className="grid w-full grid-cols-1 sm:w-auto sm:grid-cols-3 mb-4">
+      <TabsList className={`grid w-full ${isAdmin ? 'sm:grid-cols-3' : 'sm:grid-cols-1'} mb-4`}>
         <TabsTrigger value="status">Payment Status</TabsTrigger>
-        <TabsTrigger value="qr">QR Management</TabsTrigger>
-        <TabsTrigger value="integrity">Data Integrity</TabsTrigger>
+        {isAdmin && <TabsTrigger value="qr">QR Management</TabsTrigger>}
+        {isAdmin && <TabsTrigger value="integrity">Data Integrity</TabsTrigger>}
       </TabsList>
 
       <TabsContent value="status">
         <PaymentStatusTable payments={payments} onPaymentUpdate={handlePaymentUpdate} />
       </TabsContent>
 
-      <TabsContent value="qr">
-        <QrCodeManager initialQrCode={initialQrCode} />
-      </TabsContent>
+      {isAdmin && (
+        <>
+          <TabsContent value="qr">
+            <QrCodeManager initialQrCode={initialQrCode} />
+          </TabsContent>
 
-      <TabsContent value="integrity">
-        <DataIntegrityChecker logs={firestoreLogs} />
-      </TabsContent>
+          <TabsContent value="integrity">
+            <DataIntegrityChecker logs={firestoreLogs} />
+          </TabsContent>
+        </>
+      )}
     </Tabs>
   );
 }
