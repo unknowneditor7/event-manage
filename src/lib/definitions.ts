@@ -11,3 +11,7 @@ export type Payment = {
   status: 'pending' | 'completed';
   timestamp: string; // ISO 8601 format
 };
+
+export type PaymentSettings = {
+  amount: number;
+};

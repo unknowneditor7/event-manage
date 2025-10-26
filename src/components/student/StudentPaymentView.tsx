@@ -26,6 +26,7 @@ import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useQrCodeContext } from '@/lib/QrCodeProvider';
 import { cn } from '@/lib/utils';
+import { useEventNameContext } from '@/lib/EventNameProvider';
 
 interface StudentPaymentViewProps {
   students: Student[];
@@ -34,7 +35,8 @@ interface StudentPaymentViewProps {
 export function StudentPaymentView({
   students,
 }: StudentPaymentViewProps) {
-  const { payments, updatePayment } = usePaymentContext();
+  const { payments, updatePayment, paymentSettings } = usePaymentContext();
+  const { eventName } = useEventNameContext();
   const { qrCode } = useQrCodeContext();
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
@@ -82,9 +84,9 @@ export function StudentPaymentView({
       <div className="flex justify-center">
         <Card className="w-full max-w-md shadow-lg shadow-primary/10">
           <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl">Pay Your Fee</CardTitle>
+            <CardTitle className="font-headline text-3xl">Pay Your Fee for {eventName}</CardTitle>
             <CardDescription>
-              Select your name, scan the QR code to pay ₹240.00, then confirm.
+              Select your name, scan the QR code to pay ₹{paymentSettings.amount.toFixed(2)}, then confirm.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">

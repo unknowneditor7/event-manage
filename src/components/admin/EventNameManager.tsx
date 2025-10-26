@@ -7,31 +7,35 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useEventNameContext } from '@/lib/EventNameProvider';
+import { usePaymentContext } from '@/lib/PaymentProvider';
 import { Loader2 } from 'lucide-react';
 
 export default function EventNameManager() {
   const { eventName, setEventName } = useEventNameContext();
+  const { paymentSettings, setPaymentSettings } = usePaymentContext();
   const [name, setName] = useState(eventName);
+  const [amount, setAmount] = useState(paymentSettings.amount);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (name.trim()) {
+    if (name.trim() && amount > 0) {
       setIsSubmitting(true);
       setEventName(name);
+      setPaymentSettings({ amount });
       setTimeout(() => {
         toast({
-          title: 'Event Name Updated',
-          description: `The event name is now "${name}".`,
+          title: 'Event Settings Updated',
+          description: `The event name is now "${name}" and the amount is ₹${amount}.`,
         });
         setIsSubmitting(false);
       }, 500);
     } else {
       toast({
         variant: 'destructive',
-        title: 'Invalid Name',
-        description: 'Event name cannot be empty.',
+        title: 'Invalid Input',
+        description: 'Event name cannot be empty and amount must be greater than 0.',
       });
     }
   };
@@ -40,7 +44,7 @@ export default function EventNameManager() {
     <Card>
       <CardHeader>
         <CardTitle className="font-headline">Event Settings</CardTitle>
-        <CardDescription>Manage the name of the event.</CardDescription>
+        <CardDescription>Manage the name of the event and the payment amount.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -54,9 +58,20 @@ export default function EventNameManager() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="payment-amount">Payment Amount (₹)</Label>
+            <Input
+              id="payment-amount"
+              type="number"
+              placeholder="e.g., 240"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              min="1"
+            />
+          </div>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Save Event Name
+            Save Event Settings
           </Button>
         </form>
       </CardContent>
