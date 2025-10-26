@@ -126,11 +126,10 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
       doc.text('Paid Students', 14, finalY + 15);
       doc.autoTable({
         startY: finalY + 20,
-        head: [['Student Name', 'Amount', 'Date']],
+        head: [['Student Name', 'Amount']],
         body: paidStudents.map(p => [
           p.studentName, 
-          `Rs. ${p.amount.toFixed(2)}`, 
-          new Date(p.timestamp).toLocaleDateString()
+          `Rs. ${p.amount.toFixed(2)}`,
         ]),
         theme: 'grid',
         headStyles: { fillColor: [34, 197, 94] },
@@ -180,9 +179,9 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
     // Paid Students List
     if (paidStudents.length > 0) {
       csvContent += "Paid Students\n";
-      csvContent += "Student Name,Amount,Date,Status\n";
+      csvContent += "Student Name,Amount,Status\n";
       paidStudents.forEach(p => {
-        const row = [p.studentName, p.amount.toFixed(2), new Date(p.timestamp).toLocaleDateString(), p.status];
+        const row = [p.studentName, p.amount.toFixed(2), p.status];
         csvContent += row.join(',') + "\n";
       });
       csvContent += "\n";
