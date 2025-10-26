@@ -1,9 +1,10 @@
-import { students } from '@/lib/data';
+import { students, payments } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { StudentPaymentView } from '@/components/student/StudentPaymentView';
 
 export default function Home() {
   const studentList = students;
+  const paymentList = payments;
   const qrCodeImage = PlaceHolderImages.find((img) => img.id === 'qr-code-1');
 
   if (!qrCodeImage) {
@@ -13,7 +14,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <StudentPaymentView students={studentList} qrCodeImage={qrCodeImage} />
+      <StudentPaymentView students={studentList} payments={paymentList} qrCodeImage={qrCodeImage} />
     </div>
   );
 }
