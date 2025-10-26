@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { CheckCircle, Clock, Loader2 } from 'lucide-react';
 import type { Payment } from '@/lib/definitions';
 import {
@@ -33,7 +33,7 @@ function SubmitButton({ payment }: { payment: Payment }) {
 
 export default function PaymentStatusTable({ payments, onPaymentUpdate }: { payments: Payment[], onPaymentUpdate: (paymentId: string) => void }) {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(updatePaymentStatus, { status: 'idle', message: '' });
+  const [state, formAction] = useActionState(updatePaymentStatus, { status: 'idle', message: '' });
 
   useEffect(() => {
     if (state.status === 'success') {

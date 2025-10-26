@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { validateData, type DataIntegrityState } from '@/lib/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,7 +31,7 @@ function SubmitButton() {
 }
 
 export default function DataIntegrityChecker({ logs }: { logs: string }) {
-  const [state, formAction] = useFormState(validateData, initialState);
+  const [state, formAction] = useActionState(validateData, initialState);
 
   return (
     <Card>
