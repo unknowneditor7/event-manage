@@ -7,6 +7,7 @@ import PaymentStatusTable from './PaymentStatusTable';
 import QrCodeManager from './QrCodeManager';
 import DataIntegrityChecker from './DataIntegrityChecker';
 import { useState } from 'react';
+import { Lock } from 'lucide-react';
 
 interface AdminDashboardProps {
   initialPayments: Payment[];
@@ -33,8 +34,18 @@ export default function AdminDashboard({
     <Tabs defaultValue="status">
       <TabsList className="grid w-full sm:grid-cols-3 mb-4">
         <TabsTrigger value="status">Payment Status</TabsTrigger>
-        <TabsTrigger value="qr">QR Management</TabsTrigger>
-        <TabsTrigger value="integrity">Data Integrity</TabsTrigger>
+        <TabsTrigger value="qr" disabled={!isAdmin}>
+            <div className='flex items-center gap-2'>
+                QR Management
+                {!isAdmin && <Lock className="h-4 w-4" />}
+            </div>
+        </TabsTrigger>
+        <TabsTrigger value="integrity" disabled={!isAdmin}>
+            <div className='flex items-center gap-2'>
+                Data Integrity
+                {!isAdmin && <Lock className="h-4 w-4" />}
+            </div>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="status">
@@ -43,11 +54,15 @@ export default function AdminDashboard({
 
       
       <TabsContent value="qr">
-        <QrCodeManager initialQrCode={initialQrCode} />
+        {isAdmin ? (
+          <QrCodeManager initialQrCode={initialQrCode} />
+        ) : null}
       </TabsContent>
 
       <TabsContent value="integrity">
-        <DataIntegrityChecker logs={firestoreLogs} />
+        {isAdmin ? (
+          <DataIntegrityChecker logs={firestoreLogs} />
+        ) : null}
       </TabsContent>
       
     </Tabs>
