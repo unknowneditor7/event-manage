@@ -58,10 +58,20 @@ export default function PaymentStatusTable({ payments }: { payments: Payment[] }
 
   const [state, formAction] = useActionState(onAction, { status: 'idle', message: '' });
 
+  const totalCollected = payments
+    .filter((p) => p.status === 'completed')
+    .reduce((sum, p) => sum + p.amount, 0);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Payment Status</CardTitle>
+        <div className="flex justify-between items-start">
+          <CardTitle className="font-headline">Payment Status</CardTitle>
+          <div className="text-right">
+            <p className="text-sm font-medium text-muted-foreground">Total Collected</p>
+            <p className="text-2xl font-bold font-headline">₹{totalCollected.toFixed(2)}</p>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
